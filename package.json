@@ -1,0 +1,117 @@
+{
+  "name": "cursor-usage",
+  "displayName": "Cursor Usage",
+  "description": "在状态栏以进度条 + 精确数值展示 Cursor plan 剩余用量",
+  "version": "0.1.1",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "cursorUsage.refresh",
+        "title": "Cursor Usage: 刷新用量"
+      },
+      {
+        "command": "cursorUsage.openDashboard",
+        "title": "Cursor Usage: 打开 Dashboard"
+      },
+      {
+        "command": "cursorUsage.showOutput",
+        "title": "Cursor Usage: 查看日志"
+      }
+    ],
+    "configuration": {
+      "title": "Cursor Usage",
+      "properties": {
+        "cursorUsage.refreshInterval": {
+          "type": "number",
+          "default": 60,
+          "minimum": 10,
+          "description": "自动刷新间隔（秒），最小 10。"
+        },
+        "cursorUsage.mode": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "dollars",
+            "requests"
+          ],
+          "enumDescriptions": [
+            "自动：优先美元额度，没有有限额度时回退到请求次数",
+            "美元额度（按量付费 / Pro 的 $ 上限）",
+            "请求次数（经典 fast/premium 请求额度）"
+          ],
+          "default": "auto",
+          "description": "用量计量模型。"
+        },
+        "cursorUsage.model": {
+          "type": "string",
+          "default": "gpt-4",
+          "description": "请求型套餐下要跟踪的模型额度键名（默认 gpt-4，即 premium/fast 请求额度）。"
+        },
+        "cursorUsage.alignment": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "right",
+          "description": "状态栏对齐方向。"
+        },
+        "cursorUsage.priority": {
+          "type": "number",
+          "default": 100,
+          "description": "状态栏项优先级，数值越大越靠左。"
+        },
+        "cursorUsage.barWidth": {
+          "type": "number",
+          "default": 10,
+          "minimum": 3,
+          "maximum": 20,
+          "description": "文本进度条的字符宽度。"
+        },
+        "cursorUsage.warnThreshold": {
+          "type": "number",
+          "default": 90,
+          "minimum": 1,
+          "maximum": 100,
+          "description": "用量百分比超过该阈值时高亮告警（黄色背景）。"
+        },
+        "cursorUsage.token": {
+          "type": "string",
+          "default": "",
+          "description": "（可选）手动指定 Cursor accessToken / WorkosCursorSessionToken。留空则自动从本地数据库读取。"
+        },
+        "cursorUsage.dbPath": {
+          "type": "string",
+          "default": "",
+          "description": "（可选）手动指定 Cursor state.vscdb 路径。留空则自动按平台探测。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "sql.js": "^1.10.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "@types/sql.js": "^1.4.9",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.4.0"
+  }
+}
